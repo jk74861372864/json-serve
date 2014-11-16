@@ -71,10 +71,10 @@ if (!String.prototype.format) {
 
 		var url = "/search?skip={0}&filter={1}".format(skip, filter);
 		
-		var data = $.getJSON(url, json_serve.processResults);
+		var data = $.getJSON(url, json_serve.process_results);
 	};
 
-	json_serve.processResults = function (data) {
+	json_serve.process_results = function (data) {
 		json_serve.total_results = parseInt(data[0].n);
 
 		var first_button = "<a class='btn btn-primary' href='#' role='button' id='first'>&laquo; First</a>";
@@ -98,7 +98,7 @@ if (!String.prototype.format) {
 			if (key % 4 === 0) {
 				results += "</div><div class='row'>";
 			}			
-			results += json_serve.buildResult(val);			
+			results += json_serve.build_result(val);			
 		});
 
 		results += "</div>"
@@ -111,7 +111,7 @@ if (!String.prototype.format) {
 		$('#last').click(json_serve.last_page);
 	};
 
-	json_serve.buildResult = function (data) {
+	json_serve.build_result = function (data) {
 		var result = "<div id='{0}' class='col-xs-12 col-sm-6 col-md-6 col-lg-3'><div class='well'>".format(data.id);
 		result += "<h3>{0}</h3>".format(data.title);
 		result += "<p>{0}</p>".format(data.medium);
