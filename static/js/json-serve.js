@@ -12,70 +12,70 @@ if (!String.prototype.format) {
 }
 
 // tljs namespace.
-(function( json-serve, $ ) {
+(function( json_serve, $ ) {
 	
-	json-serve.total_results = 0;
+	json_serve.total_results = 0;
 	
-	json-serve.current_page = 0;
+	json_serve.current_page = 0;
 
-	json-serve.total_pages = function () {
-		return parseInt(json-serve.total_results / 20);
+	json_serve.total_pages = function () {
+		return parseInt(json_serve.total_results / 20);
 	};
 
-	json-serve.first_page = function () {
-		json-serve.current_page = 0;
+	json_serve.first_page = function () {
+		json_serve.current_page = 0;
 
-		json-serve.search();		
+		json_serve.search();		
 	};
 	
-	json-serve.previous_page = function () {
-		if (json-serve.current_page > 0) {
-			json-serve.current_page--;
+	json_serve.previous_page = function () {
+		if (json_serve.current_page > 0) {
+			json_serve.current_page--;
 		}
 
-		json-serve.search();		
+		json_serve.search();		
 	};
 
-	json-serve.next_page = function () {
-		if (json-serve.current_page < json-serve.total_pages()) {
-			json-serve.current_page++;
+	json_serve.next_page = function () {
+		if (json_serve.current_page < json_serve.total_pages()) {
+			json_serve.current_page++;
 		}
 
-		json-serve.search();		
+		json_serve.search();		
 	};
 
-	json-serve.last_page = function () {
-		json-serve.current_page = json-serve.total_pages();
+	json_serve.last_page = function () {
+		json_serve.current_page = json_serve.total_pages();
 
-		json-serve.search();		
+		json_serve.search();		
 	};
 	
-    json-serve.init = function () {
-		$('#filter').change(json-serve.change_filter);
+    json_serve.init = function () {
+		$('#filter').change(json_serve.change_filter);
 
-		json-serve.search();
+		json_serve.search();
     };
 
-	json-serve.change_filter = function () {
-		json-serve.current_page = 0;
+	json_serve.change_filter = function () {
+		json_serve.current_page = 0;
 
-		json-serve.search();
+		json_serve.search();
 	};
 
-	json-serve.search = function () {
+	json_serve.search = function () {
 		$('#results').html("loading...");
 		
-		var skip = json-serve.current_page * 20;
+		var skip = json_serve.current_page * 20;
 
 		var filter = $("#filter").val();
 
 		var url = "/search?skip={0}&filter={1}".format(skip, filter);
 		
-		var data = $.getJSON(url, json-serve.processResults);
+		var data = $.getJSON(url, json_serve.processResults);
 	};
 
-	json-serve.processResults = function (data) {
-		json-serve.total_results = parseInt(data[0].n);
+	json_serve.processResults = function (data) {
+		json_serve.total_results = parseInt(data[0].n);
 
 		var first_button = "<a class='btn btn-primary' href='#' role='button' id='first'>&laquo; First</a>";
 		var previous_button = "<a class='btn btn-primary' href='#' role='button' id='previous'>&laquo; Previous</a>";
@@ -83,9 +83,9 @@ if (!String.prototype.format) {
 		var last_button = "<a class='btn btn-primary' href='#' role='button' id='last'>Last &raquo;</a>";
 		
 		var results = "<div class='row paging'><div class='col-xs-12'><p class='bs-component'>Showing page {0} of {1} ({2} results) {3} {4} {5} {6}</p></div></div>".format(
-			json-serve.current_page + 1,
-			json-serve.total_pages() + 1,
-			json-serve.total_results,
+			json_serve.current_page + 1,
+			json_serve.total_pages() + 1,
+			json_serve.total_results,
 			first_button,
 			previous_button,
 			next_button,
@@ -98,20 +98,20 @@ if (!String.prototype.format) {
 			if (key % 4 === 0) {
 				results += "</div><div class='row'>";
 			}			
-			results += json-serve.buildResult(val);			
+			results += json_serve.buildResult(val);			
 		});
 
 		results += "</div>"
 		
 		$('#results').html(results);
 
-		$('#first').click(json-serve.first_page);
-		$('#previous').click(json-serve.previous_page);
-		$('#next').click(json-serve.next_page);
-		$('#last').click(json-serve.last_page);
+		$('#first').click(json_serve.first_page);
+		$('#previous').click(json_serve.previous_page);
+		$('#next').click(json_serve.next_page);
+		$('#last').click(json_serve.last_page);
 	};
 
-	json-serve.buildResult = function (data) {
+	json_serve.buildResult = function (data) {
 		var result = "<div id='{0}' class='col-xs-12 col-sm-6 col-md-6 col-lg-3'><div class='well'>".format(data.id);
 		result += "<h3>{0}</h3>".format(data.title);
 		result += "<p>{0}</p>".format(data.medium);
@@ -120,4 +120,4 @@ if (!String.prototype.format) {
 		return result;
 	};
 	
-}( window.json-serve = window.json-serve || {}, jQuery));
+}( window.json_serve = window.json_serve || {}, jQuery));
