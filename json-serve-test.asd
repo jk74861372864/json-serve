@@ -1,14 +1,14 @@
 (in-package :cl-user)
-(defpackage webc-test-asd
+(defpackage json-serve-test-asd
   (:use :cl :asdf))
-(in-package :webc-test-asd)
+(in-package :json-serve-test-asd)
 
-(defsystem webc-test
+(defsystem json-serve-test
   :author "Jim Kennedy"
   :license ""
-  :depends-on (:webc
+  :depends-on (:json-serve
                :cl-test-more)
   :components ((:module "t"
                 :components
-                ((:file "webc"))))
+                ((:file "json-serve"))))
   :perform (load-op :after (op c) (asdf:clear-system c)))

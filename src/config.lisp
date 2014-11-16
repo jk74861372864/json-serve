@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage webc.config
+(defpackage json-serve.config
   (:use :cl)
   (:import-from :envy
                 :config-env-var
@@ -11,17 +11,17 @@
            :appenv
            :developmentp
            :productionp))
-(in-package :webc.config)
+(in-package :json-serve.config)
 
 (setf (config-env-var) "APP_ENV")
 
-(defparameter *application-root*   (asdf:system-source-directory :webc))
+(defparameter *application-root*   (asdf:system-source-directory :json-serve))
 (defparameter *static-directory*   (merge-pathnames #P"static/" *application-root*))
 (defparameter *template-directory* (merge-pathnames #P"templates/" *application-root*))
 
 (defconfig :common
 	`(:data-directory "/home/jim/collection/objects/"
-	  :database "webcollection"
+	  :database "json-serveollection"
 	  :collection "objects"
 	  :title "title"
 	  :filter "department_id"

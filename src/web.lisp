@@ -1,15 +1,15 @@
 (in-package :cl-user)
-(defpackage webc.web
+(defpackage json-serve.web
   (:use :cl
         :caveman2
-        :webc.config
-        :webc.view
-		:webc.search
+        :json-serve.config
+        :json-serve.view
+		:json-serve.search
         :datafly
         :sxql
 		:yason)
   (:export :*web*))
-(in-package :webc.web)
+(in-package :json-serve.web)
 
 ;;
 ;; Application
@@ -28,8 +28,8 @@
 (defroute "/search" (&key _parsed)
   (let* ((skip (read-from-string (getf _parsed :|skip|)))
 		 (filter (getf _parsed :|filter|))
-		 (count (webc.search:count-objs filter))
-		 (results (webc.search:search-objs (if (not skip) 0 skip) filter)))
+		 (count (json-serve.search:count-objs filter))
+		 (results (json-serve.search:search-objs (if (not skip) 0 skip) filter)))
 	(render-json (list count results))))
 
 ;;

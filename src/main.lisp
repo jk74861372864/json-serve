@@ -1,16 +1,16 @@
 (in-package :cl-user)
-(defpackage webc
+(defpackage json-serve
   (:use :cl)
-  (:import-from :webc.config
+  (:import-from :json-serve.config
                 :config)
   (:import-from :clack
                 :clackup)
   (:export :start
            :stop))
-(in-package :webc)
+(in-package :json-serve)
 
 (defvar *appfile-path*
-  (asdf:system-relative-pathname :webc #P"app.lisp"))
+  (asdf:system-relative-pathname :json-serve #P"app.lisp"))
 
 (defvar *handler* nil)
 

@@ -1,6 +1,6 @@
-(ql:quickload :webc)
+(ql:quickload :json-serve)
 
-(defpackage webc.app
+(defpackage json-serve.app
   (:use :cl)
   (:import-from :clack
                 :call)
@@ -17,13 +17,13 @@
   (:import-from :ppcre
                 :scan
                 :regex-replace)
-  (:import-from :webc.web
+  (:import-from :json-serve.web
                 :*web*)
-  (:import-from :webc.config
+  (:import-from :json-serve.config
                 :config
                 :productionp
                 :*static-directory*))
-(in-package :webc.app)
+(in-package :json-serve.app)
 
 (builder
  (<clack-middleware-static>

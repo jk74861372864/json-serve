@@ -1,7 +1,7 @@
 (in-package :cl-user)
-(defpackage webc.view
+(defpackage json-serve.view
   (:use :cl)
-  (:import-from :webc.config
+  (:import-from :json-serve.config
                 :*template-directory*)
   (:import-from :caveman2
                 :*response*)
@@ -19,7 +19,7 @@
            :render
            :render-json
            :with-layout))
-(in-package :webc.view)
+(in-package :json-serve.view)
 
 (defvar *default-layout-directory* #P"layouts/")
 (defvar *default-layout-path* #P"default.tmpl")
@@ -54,9 +54,9 @@
                    *default-layout-env*)))))
 
 ;; Define functions that are available in templates.
-(import '(webc.config:config
-          webc.config:appenv
-          webc.config:developmentp
-          webc.config:productionp
+(import '(json-serve.config:config
+          json-serve.config:appenv
+          json-serve.config:developmentp
+          json-serve.config:productionp
           caveman2:url-for)
         emb:*function-package*)

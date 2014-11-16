@@ -1,9 +1,9 @@
 (in-package :cl-user)
-(defpackage webc-asd
+(defpackage json-serve-asd
   (:use :cl :asdf))
-(in-package :webc-asd)
+(in-package :json-serve-asd)
 
-(defsystem webc
+(defsystem json-serve
   :version "0.1"
   :author "Jim Kennedy"
   :license ""
@@ -19,7 +19,7 @@
                :datafly
                :sxql
 
-			   ;; webc
+			   ;; json-serve
 			   :cl-fad
 			   :cl-mongo
 			   :yason)
@@ -32,4 +32,4 @@
 				 (:file "search" :depends-on ("config"))
                  (:file "config"))))
   :description ""
-  :in-order-to ((test-op (load-op webc-test))))
+  :in-order-to ((test-op (load-op json-serve-test))))

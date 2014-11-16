@@ -1,9 +1,9 @@
 (in-package :cl-user)
-(defpackage webc-test
+(defpackage json-serve-test
   (:use :cl
-        :webc
+        :json-serve
         :cl-test-more))
-(in-package :webc-test)
+(in-package :json-serve-test)
 
 (plan nil)
 

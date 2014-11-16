@@ -4,13 +4,13 @@
 ;; and support pages of 20 documents.
 
 (in-package :cl-user)
-(defpackage webc.search
+(defpackage json-serve.search
   (:use :cl
 		:cl-mongo
-		:webc.config)
+		:json-serve.config)
   (:export :count-objs
 		   :search-objs))
-(in-package :webc.search)
+(in-package :json-serve.search)
 
 (defun count-objs (filter)
   "Perform a search on the Mongodb document collection."
