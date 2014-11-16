@@ -21,7 +21,7 @@
 
 (defconfig :common
 	`(:data-directory "/home/jim/collection/objects/"
-	  :database "json-serveollection"
+	  :database "webcollection"
 	  :collection "objects"
 	  :title "title"
 	  :filter "department_id"

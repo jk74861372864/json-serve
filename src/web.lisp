@@ -28,8 +28,14 @@
 (defroute "/search" (&key _parsed)
   (let* ((skip (read-from-string (getf _parsed :|skip|)))
 		 (filter (getf _parsed :|filter|))
-		 (count (json-serve.search:count-objs filter))
-		 (results (json-serve.search:search-objs (if (not skip) 0 skip) filter)))
+		 (query (getf _parsed :|query|))
+		 (count (json-serve.search:count-objs
+				 (if (string= filter "0") () filter)
+				 (if (string= query "") () query)))
+		 (results (json-serve.search:search-objs
+				   (if (not skip) 0 skip)
+				   (if (string= filter "0") () filter)
+				   (if (string= query "") () query))))
 	(render-json (list count results))))
 
 ;;

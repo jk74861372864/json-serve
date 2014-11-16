@@ -3,11 +3,13 @@
 ;; Mongodb database.
 
 ;; Before:
-;; db.objects.drop()
+;; db.objects.remove({});
 ;; db.objects.dropIndexes();
 
 ;; After:
 ;; db.objects.ensureIndex({title : 1}, {name: "title_index"});
+;; db.objects.ensureIndex({ "$**": "text" },{ name: "TextIndex" });
+;; db.objects.getIndexes();
 
 (in-package :cl-user)
 (defpackage json-serve.load
@@ -26,6 +28,7 @@
 (defun process-file (path)
   (if (json-file-p (namestring path))
       (progn
+		(print path)
         (let ((doc (ht->document (yason:parse (load-file path)))))
           (db.use (config :database))
           (db.insert (config :collection) doc)))))
