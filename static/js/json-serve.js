@@ -1,198 +1,233 @@
 
 if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
+    String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) { 
+            return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+            ;
+        });
+    };
 }
 
-// tljs namespace.
+// json_serve namespace.
 (function( json_serve, $ ) {
 
-	json_serve.total_results = 0;
-	
-	json_serve.current_page = 0;
+    json_serve.total_results = 0;
+    json_serve.current_page = 0;
+    json_serve.results = null;
 
-	json_serve.results = null;
-	
-	json_serve.total_pages = function () {
-		return parseInt(json_serve.total_results / 20);
-	};
-
-	json_serve.first_page = function () {
-		json_serve.current_page = 0;
-
-		json_serve.search();		
-	};
-	
-	json_serve.previous_page = function () {
-		if (json_serve.current_page > 0) {
-			json_serve.current_page--;
-		}
-
-		json_serve.search();		
-	};
-
-	json_serve.next_page = function () {
-		if (json_serve.current_page < json_serve.total_pages()) {
-			json_serve.current_page++;
-		}
-
-		json_serve.search();		
-	};
-
-	json_serve.last_page = function () {
-		json_serve.current_page = json_serve.total_pages();
-
-		json_serve.search();		
-	};
-	
+    json_serve.form_selector = "form";
+    json_serve.submit_selector = "#submit";
+    json_serve.filter_selector = "#filter";
+    json_serve.query_selector = "#query";
+    json_serve.results_selector = "#results";
+    json_serve.modal_selector = "#modal";
+    
     json_serve.init = function () {
-		$('#submit').click(json_serve.change_filter);
-
-		$("form").submit(function (e) {
-			e.preventDefault();
-
-			json_serve.search();
-		});
-
-		$('#myModal').modal({
-			keyboard: false,
-			show: false
-		})
-						 
-		json_serve.search();
+        json_serve.bind_events();
+        json_serve.init_modal();
+        json_serve.search();
     };
 
-	json_serve.submit = function () {
-		json_serve.current_page = 0;
+    json_serve.bind_events = function () {
+        $(json_serve.submit_selector).click(json_serve.change_filter);
+        $(json_serve.form_selector).submit(json_serve.form_submit);
+    };
 
-		json_serve.search();
-	};
+    json_serve.bind_events_paging = function () {
+        $('#first').click(json_serve.first_page);
+        $('#previous').click(json_serve.previous_page);
+        $('#next').click(json_serve.next_page);
+        $('#last').click(json_serve.last_page);
+        $('.view').click(json_serve.view_result);
+    };
 
-	json_serve.search = function () {
-		$('#results').html("loading...");
-		
-		var skip = json_serve.current_page * 20;
+    json_serve.init_modal = function () {
+        $(json_serve.modal_selector).modal({
+            keyboard: true,
+            show: false
+        });
+    };
+    
+    json_serve.total_pages = function () {
+        return parseInt(json_serve.total_results / 20);
+    };
 
-		var filter = $("#filter").val();
+    json_serve.first_page = function () {
+        json_serve.current_page = 0;
 
-		var query = encodeURIComponent($("#query").val());
-		
-		var url = "/search?skip={0}&filter={1}&query={2}".format(
-			skip,
-			filter,
-			query);
-		
-		var data = $.getJSON(url, json_serve.process_results).error(function () {
-			alert ("Error no data returned.");
-		});
-	};
+        json_serve.search();        
+    };
+    
+    json_serve.previous_page = function () {
+        if (json_serve.current_page > 0) {
+            json_serve.current_page--;
+        }
 
-	json_serve.process_results = function (data) {
-		json_serve.total_results = parseInt(data[0].n);
+        json_serve.search();        
+    };
+    
+    json_serve.next_page = function () {
+        if (json_serve.current_page < json_serve.total_pages()) {
+            json_serve.current_page++;
+        }
 
-		if (json_serve.total_results === 0) {
-			$('#results').html("No data found");
+        json_serve.search();        
+    };
 
-			return;
-		}
+    json_serve.last_page = function () {
+        json_serve.current_page = json_serve.total_pages();
 
-		json_serve.results = data[1];
-		
-		var first_button = "<a class='btn btn-primary' href='#' role='button' id='first'>&laquo; First</a>";
-		var previous_button = "<a class='btn btn-primary' href='#' role='button' id='previous'>&laquo; Previous</a>";
-		var next_button = "<a class='btn btn-primary' href='#' role='button' id='next'>Next &raquo;</a>";
-		var last_button = "<a class='btn btn-primary' href='#' role='button' id='last'>Last &raquo;</a>";
-		
-		var results = "<div class='row paging'><div class='col-xs-12'><p class='bs-component'>Showing page {0} of {1} ({2} results) {3} {4} {5} {6}</p></div></div>".format(
-			json_serve.current_page + 1,
-			json_serve.total_pages() + 1,
-			json_serve.total_results,
-			first_button,
-			previous_button,
-			next_button,
-			last_button
-		);
-		
-		results += "<div class='row'>";
-		
-		$.each( json_serve.results, function( key, val ) {
-			if (key % 4 === 0) {
-				results += "</div><div class='row'>";
-			}			
-			results += json_serve.build_result(val);			
-		});
+        json_serve.search();        
+    };
 
-		results += "</div>"
-		
-		$('#results').html(results);
+    json_serve.form_submit = function (e) {
+        e.preventDefault();
 
-		$('#first').click(json_serve.first_page);
-		$('#previous').click(json_serve.previous_page);
-		$('#next').click(json_serve.next_page);
-		$('#last').click(json_serve.last_page);
-		$('.view').click(json_serve.view_result);
-	};
+        json_serve.submit();
+    };
+    
+    json_serve.submit = function () {
+        json_serve.current_page = 0;
 
-	json_serve.build_result = function (data) {
-		var result = "<div id='{0}' class='col-xs-12 col-sm-6 col-md-6 col-lg-3'><div class='well'>".format(data.id);
-		result += "<h3>{0}</h3>".format(data.title);
-		result += "<p>{0}</p>".format(data.medium);
-		result += "<p><a class='btn btn-primary view' href='#' role='button'>View »</a></p>";
-		result += "</div></div>";	
-		return result;
-	};
+        json_serve.search();
+    };
 
-	json_serve.view_result = function () {
+    json_serve.search = function () {
+        $(json_serve.results_selector).html("loading...");
+        
+        var skip = json_serve.current_page * 20;
+        var filter = $(json_serve.filter_selector).val();
+        var query = $(json_serve.query_selector).val();
+        
+        var url = "/search?skip={0}&filter={1}&query={2}".format(
+            encodeURIComponent(skip),
+            encodeURIComponent(filter),
+            encodeURIComponent(query));
+        
+        var data = $.getJSON(
+            url,
+            json_serve.process_results).error(
+                json_serve.search_error);
+    };
 
-		var div = $(this).parent().parent().parent();
+    json_serve.search_error = function () {
+        alert ("Error fetching data");
+    };
 
-		$.each(json_serve.results, function (key, val) {
-			if (val.id === div.attr('id')) {
-				var title = val.title;
-				
-				$('.modal-title').html(title);
+    json_serve.process_results = function (data) {
+        json_serve.total_results = parseInt(data[0].n);
 
-				var results = "<table class='table table-striped table-hover '>"
-				results += "<thead>";
-                results += "<tr>";
-                results += "<th>Property</th>";
-                results += "<th>Value</th>";
-                results += "</tr>";
-                results += "</thead>";
-                results += "<tbody>";
+        // Validate we have results to process.
+        if (json_serve.total_results === 0) {
+            $(json_serve.results_selector).html("No data found");
 
-				for (key in val) {
-					if (val[key] !== "") {
-						results += "  <tr>";
-						results += "<td>{0}</td>".format(key);
+            return;
+        }
 
-						if (val[key] !== null && typeof val[key] === 'object') {
-							var html = "";
-							for (prop in val[key]) {
-								html += val[key][prop] + ", ";
-							}
-							results += "<td>{0}</td></tr>".format(html);
-						} else {
-							results += "<td>{0}</td></tr>".format(val[key]);
-						}
-					}
-				}
+        json_serve.results = data[1];
 
-				results += "</tbody></table>";
+        var html = json_serve.build_pagination();
+        html += json_serve.build_results();
+        
+        // Insert html into dom
+        $(json_serve.results_selector).html(html);
 
-				$('.modal-body').html(results);
-				
-				$('#myModal').modal('show');
-			}
-		});
-		
-	};
-	
+        // Bind events
+        json_serve.bind_events_paging();
+    };
+    
+    json_serve.build_pagination = function () {
+        var data = {
+            page: json_serve.current_page + 1,
+            total_pages: json_serve.total_pages() + 1,
+            total_results: json_serve.total_results
+        };
+        var template = $('#paging_template').html();
+        var html = Mustache.to_html(template, data);
+        return html;
+    };
+
+    json_serve.build_results = function () {
+        // Build the individual results html
+        var html = "";        
+        $.each( json_serve.results, function( key, val ) {
+            html += json_serve.build_result(val);            
+        });
+
+        // Build the results container html
+        var data = {
+            results: html
+        };
+        template = $('#results_template').html();
+        html = Mustache.to_html(template, data);
+
+        return html;
+    };
+
+    json_serve.build_result = function (data) {
+        var template = $('#result_template').html();
+        var html = Mustache.to_html(template, data);
+        return html;
+    };
+
+    json_serve.view_result = function () {
+        var div = $(this).parent().parent().parent();
+
+        $.each(json_serve.results, function (key, val) {
+            if (val.id === div.attr('id')) {
+                json_serve.build_modal(val);
+            }
+        });
+    };
+
+    json_serve.build_modal = function (val) {
+        var title = val.title;
+        $(json_serve.modal_selector + ' .modal-title').html(title);
+
+        var rows = "";
+        for (key in val) {
+            if (val[key] === "") {
+                continue;
+            }
+            var data = {
+                key: key,
+                raw: val[key],
+                value: json_serve.fetch_value
+            };
+            template = $('#modal_row_template').html();
+            rows += Mustache.to_html(template, data);
+        }
+
+        var data = {
+            rows: rows
+        };
+        template = $('#modal_template').html();
+        html = Mustache.to_html(template, data);
+
+        $(json_serve.modal_selector + ' .modal-body').html(html);
+        $(json_serve.modal_selector).modal('show');
+    }
+    
+    json_serve.fetch_value = function () {
+        var fetch = function (value) {
+            if (value !== null && typeof value === 'object') {
+                var html = "";
+                for (prop in value) {
+                    if (value[prop] !== null && typeof value[prop] === 'object') {
+                        html += fetch(value[prop]);
+                    } else {
+                        html += prop + ": " + value[prop] + ", ";
+                    }
+                }
+                return html.substring(0, html.length - 2) + " ";
+            } else {
+                return value;
+            }           
+        };
+        return fetch(this.raw);
+    }
+    
 }( window.json_serve = window.json_serve || {}, jQuery));
