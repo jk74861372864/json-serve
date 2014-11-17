@@ -22,8 +22,10 @@
 (in-package :json-serve.load)
 
 (defun process-directory ()
+  (remove-data)
   (let ((dir (config :data-directory)))
-    (walk-directory dir 'process-file)))
+    (walk-directory dir 'process-file))
+  (add-indexes))
 
 (defun process-file (path)
   (if (json-file-p (namestring path))
@@ -44,3 +46,13 @@
     (let ((data (make-string (file-length stream))))
       (read-sequence data stream)
       data)))
+
+(defun remove-data ()
+  (db.use (config :database))
+  (pp (db.eval (format nil "function () { db.~A.remove({});  }" (config :collection))))
+  (pp (db.eval (format nil "function () { db.~A.dropIndexes();  }" (config :collection)))))
+
+(defun add-indexes ()
+  (db.use (config :database))
+  (pp (db.eval (format nil "function () { db.~A.ensureIndex({title : 1}, {name: 'title_index'}); }" (config :collection))))
+  (pp (db.eval (format nil "function () { db.~A.ensureIndex({ '$**': 'text' },{ name: 'TextIndex' }); }" (config :collection)))))
