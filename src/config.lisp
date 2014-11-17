@@ -24,6 +24,7 @@
       :database "webcollection"
       :collection "objects"
       :title "title"
+	  :summary "medium"
       :filter "department_id"
       :categories ((:id 35347497)
                    (:id 35347493)
