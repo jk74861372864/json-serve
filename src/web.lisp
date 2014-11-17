@@ -4,10 +4,10 @@
         :caveman2
         :json-serve.config
         :json-serve.view
-		:json-serve.search
+        :json-serve.search
         :datafly
         :sxql
-		:yason)
+        :yason)
   (:export :*web*))
 (in-package :json-serve.web)
 
@@ -27,16 +27,16 @@
 
 (defroute "/search" (&key _parsed)
   (let* ((skip (read-from-string (getf _parsed :|skip|)))
-		 (filter (getf _parsed :|filter|))
-		 (query (getf _parsed :|query|))
-		 (count (json-serve.search:count-objs
-				 (if (string= filter "0") () filter)
-				 (if (string= query "") () query)))
-		 (results (json-serve.search:search-objs
-				   (if (not skip) 0 skip)
-				   (if (string= filter "0") () filter)
-				   (if (string= query "") () query))))
-	(render-json (list count results))))
+         (filter (getf _parsed :|filter|))
+         (query (getf _parsed :|query|))
+         (count (json-serve.search:count-objs
+                 (if (string= filter "0") () filter)
+                 (if (string= query "") () query)))
+         (results (json-serve.search:search-objs
+                   (if (not skip) 0 skip)
+                   (if (string= filter "0") () filter)
+                   (if (string= query "") () query))))
+    (render-json (list count results))))
 
 ;;
 ;; Error pages

@@ -20,15 +20,15 @@
 (defparameter *template-directory* (merge-pathnames #P"templates/" *application-root*))
 
 (defconfig :common
-	`(:data-directory "/home/jim/collection/objects/"
-	  :database "webcollection"
-	  :collection "objects"
-	  :title "title"
-	  :filter "department_id"
-	  :categories ((:id 35347497)
-				   (:id 35347493)
-				   (:id 35347503)
-				   (:id 35347501))))
+    `(:data-directory "/home/jim/collection/objects/"
+      :database "webcollection"
+      :collection "objects"
+      :title "title"
+      :filter "department_id"
+      :categories ((:id 35347497)
+                   (:id 35347493)
+                   (:id 35347503)
+                   (:id 35347501))))
 
 (defconfig |development|
   '())

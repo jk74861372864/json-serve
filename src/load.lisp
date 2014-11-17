@@ -28,7 +28,7 @@
 (defun process-file (path)
   (if (json-file-p (namestring path))
       (progn
-		(print path)
+        (print path)
         (let ((doc (ht->document (yason:parse (load-file path)))))
           (db.use (config :database))
           (db.insert (config :collection) doc)))))
