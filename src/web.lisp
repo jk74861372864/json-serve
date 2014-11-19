@@ -20,23 +20,23 @@
 
 ;;
 ;; Routing rules
-
 (defroute "/" ()
   (with-layout (:title "Web collection - search")
     (render #P"index.tmpl" `(:categories ,(config :categories)))))
 
 (defroute "/search" (&key _parsed)
-  (let* ((skip (read-from-string (getf _parsed :|skip|)))
-         (filter (getf _parsed :|filter|))
-         (query (getf _parsed :|query|))
-         (count (json-serve.search:count-objs
-                 (if (string= filter "0") () filter)
-                 (if (string= query "") () query)))
-         (results (json-serve.search:search-objs
-                   (if (not skip) 0 skip)
-                   (if (string= filter "0") () filter)
-                   (if (string= query "") () query))))
+  (let* ((skip (process-param (read-from-string (getf _parsed :|skip|)) 0))
+         (filter (process-param (getf _parsed :|filter|)))
+         (query (process-param (getf _parsed :|query|)))
+         (count (json-serve.search:count-objs filter query))
+         (results (json-serve.search:search-objs skip filter query)))
     (render-json (list count results))))
+
+(defun process-param (value &optional (default nil))
+  (if (not value) (return-from process-param default))
+  (if (string= value "0") (return-from process-param default))
+  (if (string= value "") (return-from process-param default))
+  value)
 
 ;;
 ;; Error pages
