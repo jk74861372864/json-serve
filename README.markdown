@@ -11,8 +11,9 @@ The following values need to be set in the src/config.lisp file:
 - :data-directory - the file system directory where the json files are located
 - :database - the name of the Mongodb database to connect to 
 - :collection - the name of the Mongodb collection to store the data in
-- :title  - the name of the document property to use as a title
-- :filter - the name of the document property to segment data on
+- :title  - the name of a document property to use as a title
+- :summary  - the name of a document property to use as a summary
+- :category - the name of a document property to segment the data on
 - :categories - used in conjunction with the filter to provide a segmentation facility
 
 ## Running
