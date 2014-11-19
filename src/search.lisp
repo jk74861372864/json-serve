@@ -1,8 +1,4 @@
 
-;; Search the objects collection in the Mongodb database for all
-;; documents containing a description. Order by a the document title,
-;; and support pages of 20 documents.
-
 (in-package :cl-user)
 (defpackage json-serve.search
   (:use :cl

@@ -1,7 +1,4 @@
 
-;; Loads all the Json files found in the specified directory into the
-;; Mongodb database.
-
 (in-package :cl-user)
 (defpackage json-serve.load
   (:use :cl
