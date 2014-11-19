@@ -9,7 +9,7 @@
 (in-package :json-serve.search)
 
 (defun count-objs (category free-text)
-  "Perform a search on the Mongodb document collection."
+  "Perform a count on the Mongodb document collection."
   (db.use (config :database))
   (let ((results (docs (db.count (config :collection)
                                  (build-query category free-text)))))
@@ -27,6 +27,8 @@
        collect (doc-to-ht doc))))
 
 (defun build-query (category free-text)
+  "Build the Mongodb query based on the presence of supplied
+   parameters."
   (if (and (not (null category)) (not (null free-text)))
       (return-from build-query
         (kv
