@@ -2,15 +2,6 @@
 ;; Loads all the Json files found in the specified directory into the
 ;; Mongodb database.
 
-;; Before:
-;; db.objects.remove({});
-;; db.objects.dropIndexes();
-
-;; After:
-;; db.objects.ensureIndex({title : 1}, {name: "title_index"});
-;; db.objects.ensureIndex({ "$**": "text" },{ name: "TextIndex" });
-;; db.objects.getIndexes();
-
 (in-package :cl-user)
 (defpackage json-serve.load
   (:use :cl
