@@ -25,7 +25,7 @@
     (render #P"index.tmpl" `(:categories ,(config :categories)))))
 
 (defroute "/search" (&key _parsed)
-  (let* ((skip (process-param (read-from-string (getf _parsed :|skip|)) 0))
+  (let* ((skip (read-from-string (process-param (getf _parsed :|skip|) "0")))
          (filter (process-param (getf _parsed :|filter|)))
          (query (process-param (getf _parsed :|query|)))
          (count (json-serve.search:count-objs filter query))
