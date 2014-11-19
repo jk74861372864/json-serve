@@ -2,7 +2,7 @@
 if (!String.prototype.format) {
     String.prototype.format = function() {
         var args = arguments;
-        return this.replace(/{(\d+)}/g, function(match, number) { 
+        return this.replace(/{(\d+)}/g, function(match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
@@ -24,7 +24,7 @@ if (!String.prototype.format) {
     json_serve.query_selector = "#query";
     json_serve.results_selector = "#results";
     json_serve.modal_selector = "#modal";
-    
+
     json_serve.init = function () {
         json_serve.bind_events();
         json_serve.init_modal();
@@ -50,7 +50,7 @@ if (!String.prototype.format) {
             show: false
         });
     };
-    
+
     json_serve.total_pages = function () {
         return parseInt(json_serve.total_results / 20);
     };
@@ -58,29 +58,29 @@ if (!String.prototype.format) {
     json_serve.first_page = function () {
         json_serve.current_page = 0;
 
-        json_serve.search();        
+        json_serve.search();
     };
-    
+
     json_serve.previous_page = function () {
         if (json_serve.current_page > 0) {
             json_serve.current_page--;
         }
 
-        json_serve.search();        
+        json_serve.search();
     };
-    
+
     json_serve.next_page = function () {
         if (json_serve.current_page < json_serve.total_pages()) {
             json_serve.current_page++;
         }
 
-        json_serve.search();        
+        json_serve.search();
     };
 
     json_serve.last_page = function () {
         json_serve.current_page = json_serve.total_pages();
 
-        json_serve.search();        
+        json_serve.search();
     };
 
     json_serve.form_submit = function (e) {
@@ -88,7 +88,7 @@ if (!String.prototype.format) {
 
         json_serve.submit();
     };
-    
+
     json_serve.submit = function () {
         json_serve.current_page = 0;
 
@@ -97,16 +97,16 @@ if (!String.prototype.format) {
 
     json_serve.search = function () {
         $(json_serve.results_selector).html("loading...");
-        
+
         var skip = json_serve.current_page * 20;
         var filter = $(json_serve.filter_selector).val();
         var query = $(json_serve.query_selector).val();
-        
+
         var url = "/search?skip={0}&filter={1}&query={2}".format(
             encodeURIComponent(skip),
             encodeURIComponent(filter),
             encodeURIComponent(query));
-        
+
         var data = $.getJSON(
             url,
             json_serve.process_results).error(
@@ -131,14 +131,14 @@ if (!String.prototype.format) {
 
         var html = json_serve.build_pagination();
         html += json_serve.build_results();
-        
+
         // Insert html into dom
         $(json_serve.results_selector).html(html);
 
         // Bind events
         json_serve.bind_events_paging();
     };
-    
+
     json_serve.build_pagination = function () {
         var data = {
             page: json_serve.current_page + 1,
@@ -152,9 +152,9 @@ if (!String.prototype.format) {
 
     json_serve.build_results = function () {
         // Build the individual results html
-        var html = "";        
+        var html = "";
         $.each( json_serve.results, function( key, val ) {
-            html += json_serve.build_result(val);            
+            html += json_serve.build_result(val);
         });
 
         // Build the results container html
@@ -209,14 +209,14 @@ if (!String.prototype.format) {
 
         $(json_serve.modal_selector + ' .modal-body').html(html);
         $(json_serve.modal_selector).modal('show');
-    }
-    
+    };
+
     json_serve.fetch_value = function () {
         var fetch = function (value) {
-            if (value !== null && typeof value === 'object') {
+            if (json_serve.is_object(value)) {
                 var html = "";
                 for (prop in value) {
-                    if (value[prop] !== null && typeof value[prop] === 'object') {
+                    if (json_serve.is_object(value[prop])) {
                         html += fetch(value[prop]);
                     } else {
                         html += prop + ": " + json_serve.make_url(value[prop]) + ", ";
@@ -225,9 +225,17 @@ if (!String.prototype.format) {
                 return html.substring(0, html.length - 2) + " ";
             } else {
                 return json_serve.make_url(value);
-            }           
+            }
         };
         return fetch(this.raw);
+    };
+
+    json_serve.is_object = function (value) {
+        if (value !== null && typeof value === 'object') {
+            return true;
+        } else {
+            return false;
+        }
     };
 
     json_serve.make_url = function (str) {
@@ -243,5 +251,5 @@ if (!String.prototype.format) {
             return "<a href='{0}' target='_blank'>{1}</a>".format(str, "Link");
         }
     };
-    
+
 }( window.json_serve = window.json_serve || {}, jQuery));
