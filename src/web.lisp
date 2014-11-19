@@ -32,6 +32,9 @@
          (results (json-serve.search:search-objs skip filter query)))
     (render-json (list count results))))
 
+;;
+;; Utilities
+
 (defun process-param (value &optional (default nil))
   (if (not value) (return-from process-param default))
   (if (string= value "0") (return-from process-param default))
