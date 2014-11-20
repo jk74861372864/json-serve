@@ -151,27 +151,30 @@ if (!String.prototype.format) {
     };
 
     json_serve.build_results = function () {
-        // Build the individual results html
-        var html = "";
+        var rows = [];
+        var row = {columns: []};
+
         $.each( json_serve.results, function( key, val ) {
-            html += json_serve.build_result(val);
+            if ( key > 0 && key % 4 === 0 ) {
+                rows.push( row );
+                row = {columns: []};
+            }
+            row.columns.push( val );
         });
+        if ( row.columns.length > 0 ) {
+            rows.push( row );
+        }
 
         // Build the results container html
         var data = {
-            results: html
+            rows: rows
         };
         template = $('#results_template').html();
-        html = Mustache.to_html(template, data);
-
-        return html;
-    };
-
-    json_serve.build_result = function (data) {
-        var template = $('#result_template').html();
         var html = Mustache.to_html(template, data);
+
         return html;
     };
+
 
     json_serve.view_result = function () {
         var div = $(this).parent().parent().parent();

@@ -65,8 +65,8 @@
     <div class='col-xs-12'>
       <p class='bs-component'>
         Showing page {{page}} of {{total_pages}} ({{total_results}} results)
-	  </p>
-	  <p>
+      </p>
+      <p>
         <a class='btn btn-primary' href='#' role='button' id='first'>&laquo; First</a>
         <a class='btn btn-primary' href='#' role='button' id='previous'>&laquo; Previous</a>
         <a class='btn btn-primary' href='#' role='button' id='next'>Next &raquo;</a>
@@ -77,21 +77,21 @@
 </script>
 
 <script id="results_template" type="text/template">
+  {{#rows}}
   <div class='row'>
-    {{&results}}
-  </div>
-</script>
-
-<script id="result_template" type="text/template">
-  <div id='{{id}}' class='col-xs-12 col-sm-6 col-md-6 col-lg-3'>
-    <div class='well'>
-      <h3>{{title}}</h3>
-      <p>{{medium}}</p>
-      <p>
-        <a class='btn btn-primary view' href='#' role='button'>View »</a>
-      </p>
+    {{#columns}}
+    <div id='{{id}}' class='col-xs-12 col-sm-6 col-md-6 col-lg-3'>
+      <div class='well'>
+        <h3>{{title}}</h3>
+        <p>{{medium}}</p>
+        <p>
+          <a class='btn btn-primary view' href='#' role='button'>View »</a>
+        </p>
+      </div>
     </div>
+    {{/columns}}
   </div>
+  {{/rows}}
 </script>
 
 <script id="modal_template" type="text/template">
