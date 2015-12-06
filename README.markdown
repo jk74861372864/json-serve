@@ -5,6 +5,10 @@ A web based system to search a collection of json documents.
 - Based on the Caveman2 web framework
 - Uses Mongodb for data storage and retrieval
 
+## Installation
+
+- libffi 
+
 ## Configuration
 The following values need to be set in the src/config.lisp file:
 
